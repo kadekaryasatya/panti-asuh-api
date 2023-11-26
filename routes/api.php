@@ -28,20 +28,6 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-Route::apiResource('pengurus-panti', PengurusPantiController::class);
-Route::put('/pengurus-panti/{id}', function (Request $request, $id) {
-    $pengurusPanti = PengurusPanti::findOrFail($id);
-
-    $request->validate([
-        'nama' => 'required|string',
-        'alamat' => 'required|string',
-        'tempat_lahir' => 'required|string',
-        'tanggal_lahir' => 'required|date',
-        'no_telepon' => 'required|string',
-        'isActive' => 'required|in:aktif,non-aktif',
-    ]);
-
-    $pengurusPanti->update($request->all());
-
-    return response()->json($pengurusPanti, 200);
+Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::apiResource('pengurus-panti', PengurusPantiController::class);
 });

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pengurus_Panti;
 use App\Http\Controllers\Controller;
 use App\Models\PengurusPanti;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth; 
 
 class PengurusPantiController extends Controller
 {
@@ -66,7 +66,7 @@ class PengurusPantiController extends Controller
 
         $pengurusPanti->update($request->all());
 
-        return response()->json('data berhasil ditambahkan', 200);
+        return response()->json('data berhasil diubah', 200);
     }
     /**
      * Remove the specified resource from storage.
