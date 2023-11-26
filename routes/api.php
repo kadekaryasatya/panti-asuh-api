@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
 
 
 /*
@@ -25,4 +26,22 @@ Route::group(['prefix' => 'auth'], function () {
       Route::get('logout', [AuthController::class, 'logout']);
       Route::get('user', [AuthController::class, 'user']);
     });
+});
+
+Route::apiResource('pengurus-panti', PengurusPantiController::class);
+Route::put('/pengurus-panti/{id}', function (Request $request, $id) {
+    $pengurusPanti = PengurusPanti::findOrFail($id);
+
+    $request->validate([
+        'nama' => 'required|string',
+        'alamat' => 'required|string',
+        'tempat_lahir' => 'required|string',
+        'tanggal_lahir' => 'required|date',
+        'no_telepon' => 'required|string',
+        'isActive' => 'required|in:aktif,non-aktif',
+    ]);
+
+    $pengurusPanti->update($request->all());
+
+    return response()->json($pengurusPanti, 200);
 });
