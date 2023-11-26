@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Artikel\ArtikelController;
+use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
+
 
 
 /*
@@ -27,7 +29,13 @@ Route::group(['prefix' => 'auth'], function () {
       Route::get('user', [AuthController::class, 'user']);
     });
 
-
 });
 
 Route::apiResource('artikel',ArtikelController::class);
+
+});
+
+Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::apiResource('pengurus-panti', PengurusPantiController::class);
+});
+
