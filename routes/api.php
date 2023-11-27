@@ -22,13 +22,15 @@ use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
 
 //Auth
 Route::group(['prefix' => 'auth'], function () {
-    
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
 
     Route::group(['middleware' => 'auth:sanctum'], function() {
       Route::get('logout', [AuthController::class, 'logout']);
       Route::get('user', [AuthController::class, 'user']);
+      Route::get('users', [AuthController::class, 'getAllUsers']);
+      Route::delete('users/{id}', [AuthController::class, 'deleteUser']);
+
     });
 
 });
