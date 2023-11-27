@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Api\AnakAsuhController;
 
 
 /*
@@ -17,7 +18,7 @@ use App\Http\Controllers\Auth\AuthController;
 */
 
 Route::group(['prefix' => 'auth'], function () {
-    
+
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
 
@@ -26,3 +27,9 @@ Route::group(['prefix' => 'auth'], function () {
       Route::get('user', [AuthController::class, 'user']);
     });
 });
+
+Route::apiResource('/anak-asuh', App\Http\Controllers\Anak\AnakAsuhController::class);
+Route::apiResource('/data-penyakit', App\Http\Controllers\Anak\PenyakitController::class);
+Route::apiResource('/kesehatan-anak', App\Http\Controllers\Anak\KesehatanAnakController::class);
+Route::apiResource('/pendidikan-anak', App\Http\Controllers\Anak\PendidikanAnakController::class);
+Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakController::class);
