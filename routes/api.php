@@ -19,6 +19,8 @@ use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
 |
 */
 
+
+//Auth
 Route::group(['prefix' => 'auth'], function () {
     
     Route::post('login', [AuthController::class, 'login']);
@@ -31,11 +33,12 @@ Route::group(['prefix' => 'auth'], function () {
 
 });
 
+//Pengurus Panti
+Route::group(['middleware' => 'auth:sanctum'], function() {
+  Route::apiResource('pengurus-panti', PengurusPantiController::class);
+});
+
+//Artikel
 Route::apiResource('artikel',ArtikelController::class);
 
-});
-
-Route::group(['middleware' => 'auth:sanctum'], function() {
-    Route::apiResource('pengurus-panti', PengurusPantiController::class);
-});
 
