@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Program\JenisProgramController;
-use App\Http\Controllers\ProgramPantiController;
+use App\Http\Controllers\Program\ProgramPantiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +29,4 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::apiResource('jenis-program', JenisProgramController::class);
+Route::apiResource('program-panti', ProgramPantiController::class);
