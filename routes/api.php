@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-
+use App\Http\Controllers\Program\JenisProgramController;
+use App\Http\Controllers\ProgramPantiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use App\Http\Controllers\Auth\AuthController;
 */
 
 Route::group(['prefix' => 'auth'], function () {
-    
+
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
 
@@ -26,3 +27,5 @@ Route::group(['prefix' => 'auth'], function () {
       Route::get('user', [AuthController::class, 'user']);
     });
 });
+
+Route::apiResource('jenis-program', JenisProgramController::class);
