@@ -3,11 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Program\JenisProgramController;
+use App\Http\Controllers\Program\ProgramPantiController;
 use App\Http\Controllers\Api\AnakAsuhController;
 use App\Http\Controllers\Artikel\ArtikelController;
 use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +34,10 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+//program panti
+Route::apiResource('jenis-program', JenisProgramController::class);
+Route::apiResource('program-panti', ProgramPantiController::class);
+
 //Anak Asuh
 Route::apiResource('/anak-asuh', App\Http\Controllers\Anak\AnakAsuhController::class);
 Route::apiResource('/data-penyakit', App\Http\Controllers\Anak\PenyakitController::class);
@@ -49,6 +53,3 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
 //Artikel
 Route::apiResource('artikel',ArtikelController::class);
-
-
-
