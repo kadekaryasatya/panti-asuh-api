@@ -38,17 +38,17 @@ Route::group(['prefix' => 'auth'], function () {
 Route::apiResource('jenis-program', JenisProgramController::class);
 Route::apiResource('program-panti', ProgramPantiController::class);
 
-//Anak Asuh
-Route::apiResource('/anak-asuh', App\Http\Controllers\Anak\AnakAsuhController::class);
-Route::apiResource('/data-penyakit', App\Http\Controllers\Anak\PenyakitController::class);
-Route::apiResource('/kesehatan-anak', App\Http\Controllers\Anak\KesehatanAnakController::class);
-Route::apiResource('/pendidikan-anak', App\Http\Controllers\Anak\PendidikanAnakController::class);
-Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakController::class);
 
-
-//Pengurus Panti
 Route::group(['middleware' => 'auth:sanctum'], function() {
+  //Pengurus Panti
   Route::apiResource('pengurus-panti', PengurusPantiController::class);
+
+  //Anak Asuh
+  Route::apiResource('/anak-asuh', App\Http\Controllers\Anak\AnakAsuhController::class);
+  Route::apiResource('/data-penyakit', App\Http\Controllers\Anak\PenyakitController::class);
+  Route::apiResource('/kesehatan-anak', App\Http\Controllers\Anak\KesehatanAnakController::class);
+  Route::apiResource('/pendidikan-anak', App\Http\Controllers\Anak\PendidikanAnakController::class);
+  Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakController::class);
 });
 
 //Artikel
