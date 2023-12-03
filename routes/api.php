@@ -8,6 +8,7 @@ use App\Http\Controllers\Program\ProgramPantiController;
 use App\Http\Controllers\Api\AnakAsuhController;
 use App\Http\Controllers\Artikel\ArtikelController;
 use App\Http\Controllers\Pengurus_Panti\PengurusPantiController;
+use App\Http\Controllers\Program\FotoProgramController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::group(['prefix' => 'auth'], function () {
 //program panti
 Route::apiResource('jenis-program', JenisProgramController::class);
 Route::apiResource('program-panti', ProgramPantiController::class);
+Route::apiResource('foto-program', FotoProgramController::class);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
