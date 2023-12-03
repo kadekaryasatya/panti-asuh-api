@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProgramPanti;
 use App\Http\Requests\StoreProgramPantiRequest;
 use App\Http\Requests\UpdateProgramPantiRequest;
-use App\Models\FotoProgram;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramPantiController extends Controller
 {
@@ -15,7 +15,7 @@ class ProgramPantiController extends Controller
      */
     public function index()
     {
-        $programPantis = ProgramPanti::with('fotoPrograms')->get();
+        $programPantis = ProgramPanti::with('foto_programs')->get();
 
         if($programPantis->isEmpty()) {
             return response()->json(["message" => "data tidak ditemukan"], 200);
@@ -29,27 +29,15 @@ class ProgramPantiController extends Controller
      */
     public function store(StoreProgramPantiRequest $request)
     {
-        // Menggunakan $request->validated() untuk mendapatkan data yang telah divalidasi
         $data = $request->validated();
 
-        // Membuat program baru dengan data yang telah divalidasi
-        $programPanti = ProgramPanti::create($data);
-
-        // Mengambil file foto dari request dan menyimpannya
-        if ($request->hasFile('foto_programs')) {
-            foreach ($request->file('foto_programs') as $file) {
-                $path = $file->store('public/storage');
+        // menyimpan foto ke lokal storage
+        if ($request->hasFile('gambar_thumbnail')) {
+                $path = $request->file('gambar_thumbnail')->store('public/storage');
                 $filename = basename($path);
-
-                // Menyimpan informasi foto ke dalam database
-                $fotoProgram = FotoProgram::create([
-                    'nama_foto' => $filename,
-                ]);
-
-                // Hubungkan foto program dengan program
-                $programPanti->fotoProgram()->save($fotoProgram);
-            }
+                $data['gambar_thumbnail'] = $filename;
         }
+        $programPanti = ProgramPanti::create($data);
 
         return response()->json(['message' => 'Berhasil menambahkan program panti', 'data' => $programPanti], 201);
     }
@@ -69,31 +57,44 @@ class ProgramPantiController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(UpdateProgramPantiRequest $request, ProgramPanti $programPanti)
     {
+        // Validate the request data
         $data = $request->validated();
 
-        // Mengupdate program dengan data yang telah divalidasi
-        $programPanti->update($data);
+        // Check if a new image is provided in the request
+        if ($request->hasFile('gambar_thumbnail')) {
+            // Delete the previous image if it exists
+            $this->deletePreviousImage($programPanti->gambar_thumbnail);
 
-        if ($request->hasFile('foto_programs')) {
-            foreach ($request->file('foto_programs') as $file) {
-                $path = $file->store('public/storage');
-                $filename = basename($path);
-
-                // Cek apakah program sudah memiliki foto
-                if ($programPanti->fotoProgram) {
-                    // Jika sudah, update informasi foto yang sudah ada
-                    $programPanti->fotoProgram->update(['nama_foto' => $filename]);
-                } else {
-                    // Jika belum, tambahkan foto program baru
-                    $fotoProgram = FotoProgram::create(['program_panti_id' => $data['id'],'nama_foto' => $filename]);
-                }
-            }
+            // Store the new image
+            $path = $request->file('gambar_thumbnail')->store('public/storage');
+            $filename = basename($path);
+            $data['gambar_thumbnail'] = $filename;
         }
+
+        // Update the program with the validated data
+        $programPanti->update($data);
 
         return response()->json(['message' => 'Berhasil memperbarui program panti', 'data' => $programPanti]);
     }
+
+    /**
+     * Delete the previous image associated with the ProgramPanti.
+     *
+     * @param string $filename
+     * @return void
+     */
+    private function deletePreviousImage($filename)
+    {
+        // Check if the filename is not null
+        if ($filename) {
+            // Delete the previous image from storage
+            Storage::delete('public/storage/' . $filename);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
