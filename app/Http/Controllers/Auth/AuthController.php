@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -111,5 +112,46 @@ class AuthController extends Controller
         'message' => 'Successfully logged out'
         ]);
 
+    }
+    /**
+     * Get all users
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllUsers()
+    {
+        $users = User::all();
+
+        return response()->json($users, 200);
+    }
+
+     /**
+     * Delete user by ID
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            DB::beginTransaction();
+
+            // Delete the user
+            $user->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'User deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'error' => 'Failed to delete user',
+            ], 500);
+        }
     }
 }
