@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreArtikelRequest;
 use App\Http\Requests\UpdateArtikelRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ArtikelController extends Controller
 {
@@ -16,8 +17,22 @@ class ArtikelController extends Controller
      */
     public function index()
     {
-        $artikels = Artikel::all(); 
-        return response()->json($artikels,200);
+        $artikels = Artikel::paginate(5);
+    
+        // Customize the pagination response
+        $paginationData = $artikels->toArray();
+    
+        return response()->json([
+            'data' => $paginationData['data'],  // The paginated data
+            'pagination' => [
+                'total' => $paginationData['total'],
+                'per_page' => $paginationData['per_page'],
+                'current_page' => $paginationData['current_page'],
+                'last_page' => $paginationData['last_page'],
+                'from' => $paginationData['from'],
+                'to' => $paginationData['to'],
+            ],
+        ], 200);
     }
 
     /**
@@ -36,7 +51,7 @@ class ArtikelController extends Controller
         $validasi = Validator::make($request->all(), [
             'judul'=>'required|max:100',
             'deskripsi'=>'required|max:255',
-            'gambar'=>'required|max:255',
+            'gambar'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'pengurus_panti_id'=>'exists:pengurus_pantis,id',
         ], [
             'judul.required' => 'Data judul wajib diisi',
@@ -48,12 +63,17 @@ class ArtikelController extends Controller
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()]);
         } else {
+            // Upload image
+            $gambar = $request->file('gambar');
+            $gambarPath = $gambar->storeAs('public/artikel', $gambar->hashName());
+    
             $data = [
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
-                'gambar' => $request->gambar,
+                'gambar' => $gambar->hashName(), // Use the file path, not hashName
                 'pengurus_panti_id' => $request->pengurus_panti_id,
             ];
+    
             Artikel::create($data);
 
             return response()->json(['success' => "Berhasil menyimpan data"]);
@@ -80,24 +100,45 @@ class ArtikelController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Artikel $artikel)
-    {
-        $data = $request->validate([
-            'judul'=>'required|max:100',
-            'deskripsi'=>'required|max:255',
-            'gambar'=>'required|max:255',
-            'pengurus_panti'=>'exists:pengurus_pantis,id',
-        ]);
+{
+    $data = $request->validate([
+        'judul' => 'required|max:100',
+        'deskripsi' => 'required|max:255',
+        'pengurus_panti_id' => 'exists:pengurus_pantis,id',
+    ]);
 
-        $artikel->update($data);
-        return response()->json($artikel,201);
+    // Check if a new image is provided
+    if ($request->hasFile('gambar')) {
+        // Upload the new image
+        $gambar = $request->file('gambar');
+        $gambarPath = $gambar->storeAs('public/artikel', $gambar->hashName());
+
+        // Delete the old image
+        Storage::delete($artikel->gambar);
+
+        // Update the artikel with the new image file name
+        $data['gambar'] = $gambar->hashName();
     }
+
+    $artikel->update($data);
+
+    return response()->json($artikel, 201);
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(Artikel $artikel)
     {
+        // Delete the associated image file
+        Storage::delete($artikel->gambar);
+    
+        // Delete the Artikel
         $artikel->delete();
-        return response()->json($artikel,200);
+    
+        return response()->json(['message' => 'Artikel deleted successfully'], 200);
     }
+    
 }
