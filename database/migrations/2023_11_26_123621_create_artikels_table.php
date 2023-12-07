@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->string('deskripsi');
-            $table->unsignedBigInteger('pengurus_panti_id');
-            $table->foreign('pengurus_panti_id')->references('id')->on('pengurus_pantis');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('gambar');
             $table->timestamps();
         });

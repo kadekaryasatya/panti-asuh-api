@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pengurus_Panti;
 use App\Http\Controllers\Controller;
 use App\Models\PengurusPanti;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 
 class PengurusPantiController extends Controller
 {
@@ -76,8 +76,8 @@ class PengurusPantiController extends Controller
      */
     public function destroy($id)
     {
-        $pengurusPanti = PengurusPanti::findOrFail($id);
-        $pengurusPanti->delete();
-        return response()->json(['message' => 'Pengurus Panti deleted']);
+        PengurusPanti::destroy($id);
+
+        return response()->json(['success' => 'Data berhasil dihapus']);
     }
 }

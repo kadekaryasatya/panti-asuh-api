@@ -11,6 +11,6 @@ class PendidikanAnakAsuh extends Model
     protected $guarded = ['id'];
 
     public function anakAsuhs(){
-        return $this->belongsTo(KesehatanAnakAsuh::class);
+        return $this->belongsTo(AnakAsuh::class, 'anak_id');
     }
 }

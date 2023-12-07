@@ -12,4 +12,8 @@ class PengurusPanti extends Model
     protected $fillable = [
         'nama', 'alamat', 'tempat_lahir', 'tanggal_lahir', 'no_telepon', 'isActive'
     ];
+
+    Public function artikels(){
+        return $this-> hasMany(Artikel::class);
+    }
 }

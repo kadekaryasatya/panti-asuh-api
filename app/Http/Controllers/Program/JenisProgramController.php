@@ -14,13 +14,9 @@ class JenisProgramController extends Controller
      */
     public function index()
     {
-        $jenisPrograms = JenisProgram::all();
+        $data = JenisProgram::all();
 
-        if($jenisPrograms->isEmpty()) {
-            return response()->json(["message" => "data tidak ditemukan"], 200);
-        }
-
-        return response()->json($jenisPrograms, 200);
+        return response()->json($data, 200);
     }
 
     /**

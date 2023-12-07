@@ -17,11 +17,7 @@ class AnakAsuhController extends Controller
     {
         $data = AnakAsuh::all();
 
-        if ($data->isEmpty()) {
-            return response()->json(['errors' => ['Anak tidak ditemukan']], 400);
-        } else {
-            return response()->json($data);
-        }
+        return response()->json($data);
     }
 
     /**
@@ -44,9 +40,9 @@ class AnakAsuhController extends Controller
             'jenis_kelamin' => 'required',
             'agama' => 'required',
             'status' => 'required',
-            'akta_kelahiran' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048', // maksimal 2MB
-            'kartu_keluarga' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'ktp' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'akta_kelahiran' => 'required',
+            'kartu_keluarga' => 'required',
+            'ktp' => 'required',
         ], [
             'nama.required' => 'Data wajib diisi',
             'nama.unique' => 'Nama anak asuh sudah digunakan, harap pilih nama yang lain.',
@@ -208,7 +204,8 @@ class AnakAsuhController extends Controller
      */
     public function destroy(string $id)
     {
-        AnakAsuh::find($id)->delete();
-        return response()->json(['success'=>'Data berhasil Dihapus']);
+        AnakAsuh::destroy($id);
+
+        return response()->json(['success' => 'Data berhasil dihapus']);
     }
 }

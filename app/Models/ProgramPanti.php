@@ -12,7 +12,7 @@ class ProgramPanti extends Model
     protected $guarded = ['id'];
 
     public function jenis_program() {
-        return $this->belongsTo(JenisProgram::class);
+        return $this->belongsTo(JenisProgram::class, 'jenis_program_id');
     }
 
     public function foto_programs() {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Anak;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PendidikanAnakAsuh;
+use App\Models\AnakAsuh;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,13 +16,15 @@ class PendidikanAnakController extends Controller
      */
     public function index()
     {
-        $data = PendidikanAnakAsuh::all();
+        $pendidikan = PendidikanAnakAsuh::with('anakAsuhs')->get();
+        $anakData = AnakAsuh::all();
 
-        if ($data->isEmpty()) {
-            return response()->json(['errors' => ['Data tidak ditemukan']], 400);
-        } else {
-            return response()->json($data);
-        }
+        $data = [
+            'pendidikan' => $pendidikan->toArray(),
+            'anak' => $anakData->toArray(),
+        ];
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -101,14 +104,12 @@ class PendidikanAnakController extends Controller
             'nama_jenjang' => 'required',
             'nama_sekolah' => 'required',
             'tanggal_lulus' => 'required',
-            'bukti_lulus' => 'required',
 
         ], [
             'anak_id.required' => 'Data wajib diisi',
             'nama_jenjang.required' => 'Data wajib diisi',
             'nama_sekolah.required' => 'Data wajib diisi',
             'tanggal_lulus.required' => 'Data wajib diisi',
-            'bukti_lulus.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);

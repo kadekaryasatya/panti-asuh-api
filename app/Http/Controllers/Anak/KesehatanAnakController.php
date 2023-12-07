@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Anak;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KesehatanAnakAsuh;
+use App\Models\AnakAsuh;
 use Illuminate\Support\Facades\Validator;
 
 class KesehatanAnakController extends Controller
@@ -14,13 +15,15 @@ class KesehatanAnakController extends Controller
      */
     public function index()
     {
-        $data = KesehatanAnakAsuh::all();
+        $kesehatan = KesehatanAnakAsuh::with('anakAsuhs')->get();
+        $anakData = AnakAsuh::all();
 
-        if ($data->isEmpty()) {
-            return response()->json(['errors' => ['Data tidak ditemukan']], 400);
-        } else {
-            return response()->json($data);
-        }
+        $data = [
+            'kesehatan' => $kesehatan->toArray(),
+            'anak' => $anakData->toArray(),
+        ];
+
+        return response()->json($data, 200);
     }
 
     /**

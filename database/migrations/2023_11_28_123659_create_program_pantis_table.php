@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('program_pantis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('jenis_program_id');
+            $table->foreignId('jenis_program_id')->constrained('jenis_programs')->onDelete('cascade')->onUpdate('cascade');
             $table->string('judul');
             $table->string('jadwal');
             $table->text('deskripsi');
             $table->string('gambar_thumbnail');
-
-            $table->foreign('jenis_program_id')->references('id')->on('jenis_programs');
+            $table->string('isAdmin');
             $table->timestamps();
         });
     }

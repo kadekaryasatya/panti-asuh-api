@@ -10,6 +10,6 @@ class KesehatanAnakAsuh extends Model
     use HasFactory;
     protected $guarded = ['id'];
     public function anakAsuhs(){
-        return $this->belongsTo(KesehatanAnakAsuh::class);
+        return $this->belongsTo(AnakAsuh::class, 'anak_id');
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PrestasiAnakAsuh;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AnakAsuh;
 
 class PrestasiAnakController extends Controller
 {
@@ -15,13 +16,15 @@ class PrestasiAnakController extends Controller
      */
     public function index()
     {
-        $data = PrestasiAnakAsuh::all();
+        $prestasiData = PrestasiAnakAsuh::with('anakAsuhs')->get();
+        $anakData = AnakAsuh::all();
 
-        if ($data->isEmpty()) {
-            return response()->json(['errors' => ['Data tidak ditemukan']], 400);
-        } else {
-            return response()->json($data);
-        }
+        $data = [
+            'prestasi' => $prestasiData->toArray(),
+            'anak' => $anakData->toArray(),
+        ];
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -29,7 +32,7 @@ class PrestasiAnakController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -101,14 +104,12 @@ class PrestasiAnakController extends Controller
             'judul' => 'required',
             'tanggal_lomba' => 'required',
             'status' => 'required',
-            'bukti_prestasi' => 'required',
 
         ], [
             'anak_id.required' => 'Data wajib diisi',
             'judul.required' => 'Data wajib diisi',
             'tanggal_lomba.required' => 'Data wajib diisi',
             'status.required' => 'Data wajib diisi',
-            'bukti_prestasi.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()]);
@@ -145,4 +146,4 @@ class PrestasiAnakController extends Controller
         PrestasiAnakAsuh::find($id)->delete();
         return response()->json(['success'=>'Data berhasil Dihapus']);
     }
-} 
+}

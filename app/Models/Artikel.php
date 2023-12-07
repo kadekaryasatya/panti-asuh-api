@@ -10,7 +10,8 @@ class Artikel extends Model
     use HasFactory;
     Protected $guarded = ['id'];
 
-    Public function pengurus_panti(){
-        return $this-> hasMany(PengurusPanti::class);
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

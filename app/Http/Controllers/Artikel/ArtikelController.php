@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreArtikelRequest;
 use App\Http\Requests\UpdateArtikelRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ArtikelController extends Controller
 {
@@ -16,8 +17,8 @@ class ArtikelController extends Controller
      */
     public function index()
     {
-        $artikels = Artikel::all(); 
-        return response()->json($artikels,200);
+        $artikels = Artikel::with('users')->get();
+        return response()->json($artikels->toArray(), 200);
     }
 
     /**
@@ -37,22 +38,22 @@ class ArtikelController extends Controller
             'judul'=>'required|max:100',
             'deskripsi'=>'required|max:255',
             'gambar'=>'required|max:255',
-            'pengurus_panti_id'=>'exists:pengurus_pantis,id',
+            'user_id'=>'required',
         ], [
             'judul.required' => 'Data judul wajib diisi',
             'deskripsi.required' => 'Data deskripsi wajib diisi',
             'gambar.required' => 'Data gambar wajib diisi',
-            'pengurus_panti_id.required' => 'exist',
         ]);
 
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()]);
         } else {
+            $gambarPath = $request->file('gambar')->store('uploads/artikel');
             $data = [
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
-                'gambar' => $request->gambar,
-                'pengurus_panti_id' => $request->pengurus_panti_id,
+                'gambar' => $gambarPath,
+                'user_id' => $request->user_id,
             ];
             Artikel::create($data);
 
@@ -84,9 +85,15 @@ class ArtikelController extends Controller
         $data = $request->validate([
             'judul'=>'required|max:100',
             'deskripsi'=>'required|max:255',
-            'gambar'=>'required|max:255',
-            'pengurus_panti'=>'exists:pengurus_pantis,id',
         ]);
+
+        if ($request->hasFile('gambar')) {
+            // Hapus file lama sebelum menyimpan yang baru
+            Storage::delete($artikel->gambar);
+
+            // Simpan file yang baru
+            $artikel->gambar = $request->file('gambar')->getClientOriginalName();
+        }
 
         $artikel->update($data);
         return response()->json($artikel,201);

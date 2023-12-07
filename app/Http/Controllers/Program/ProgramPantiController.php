@@ -7,6 +7,7 @@ use App\Models\ProgramPanti;
 use App\Http\Requests\StoreProgramPantiRequest;
 use App\Http\Requests\UpdateProgramPantiRequest;
 use App\Models\FotoProgram;
+use App\Models\JenisProgram;
 
 class ProgramPantiController extends Controller
 {
@@ -15,13 +16,15 @@ class ProgramPantiController extends Controller
      */
     public function index()
     {
-        $programPantis = ProgramPanti::with('fotoPrograms')->get();
+        $program = ProgramPanti::with('jenis_program')->get();
+        $jenis = JenisProgram::all();
 
-        if($programPantis->isEmpty()) {
-            return response()->json(["message" => "data tidak ditemukan"], 200);
-        }
+        $data = [
+            'program' => $program->toArray(),
+            'jenis' => $jenis->toArray(),
+        ];
 
-        return response()->json(["data" =>$programPantis], 200);
+        return response()->json($data, 200);
     }
 
     /**
@@ -36,20 +39,7 @@ class ProgramPantiController extends Controller
         $programPanti = ProgramPanti::create($data);
 
         // Mengambil file foto dari request dan menyimpannya
-        if ($request->hasFile('foto_programs')) {
-            foreach ($request->file('foto_programs') as $file) {
-                $path = $file->store('public/storage');
-                $filename = basename($path);
-
-                // Menyimpan informasi foto ke dalam database
-                $fotoProgram = FotoProgram::create([
-                    'nama_foto' => $filename,
-                ]);
-
-                // Hubungkan foto program dengan program
-                $programPanti->fotoProgram()->save($fotoProgram);
-            }
-        }
+        $gambarPath = $request->file('gambar_thumbnail')->store('uploads/program-panti');
 
         return response()->json(['message' => 'Berhasil menambahkan program panti', 'data' => $programPanti], 201);
     }
