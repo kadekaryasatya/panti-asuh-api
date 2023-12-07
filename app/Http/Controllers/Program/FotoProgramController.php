@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FotoProgram;
 use App\Http\Requests\StoreFotoProgramRequest;
 use App\Http\Requests\UpdateFotoProgramRequest;
+use Illuminate\Support\Facades\Storage;
 
 class FotoProgramController extends Controller
 {
@@ -14,15 +15,13 @@ class FotoProgramController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $fotoPrograms = FotoProgram::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        if($fotoPrograms->isEmpty()) {
+            return response()->json(["message" => "data tidak ditemukan"], 200);
+        }
+
+        return response()->json($fotoPrograms, 200);
     }
 
     /**
@@ -30,7 +29,17 @@ class FotoProgramController extends Controller
      */
     public function store(StoreFotoProgramRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        if ($request->hasFile('nama_foto')) {
+            $path = $request->file('nama_foto')->store('public/storage');
+            $filename = basename($path);
+            $data['nama_foto'] = $filename;
+        }
+
+        $fotoProgram = FotoProgram::create($data);
+
+        return response()->json(["data" => $fotoProgram, "message" => "Berhasil menambah foto program"], 201);
     }
 
     /**
@@ -38,15 +47,11 @@ class FotoProgramController extends Controller
      */
     public function show(FotoProgram $fotoProgram)
     {
-        //
-    }
+        if(!$fotoProgram) {
+            return response()->json(["message" => "data tidak ditemukan"], 404);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FotoProgram $fotoProgram)
-    {
-        //
+        return response()->json($fotoProgram, 200);
     }
 
     /**
@@ -54,7 +59,36 @@ class FotoProgramController extends Controller
      */
     public function update(UpdateFotoProgramRequest $request, FotoProgram $fotoProgram)
     {
-        //
+        $data = $request->validated();
+
+        if ($request->hasFile('nama_foto')) {
+            // Delete the previous image if it exists
+            $this->deletePreviousImage($fotoProgram->nama_foto);
+
+            // Store the new image
+            $path = $request->file('nama_foto')->store('public/storage');
+            $filename = basename($path);
+            $data['nama_foto'] = $filename;
+        }
+
+        $fotoProgram->update($data);
+
+        return response()->json(["data" => $fotoProgram, "message" => "Berhasil memperbarui foto program"], 200);
+    }
+
+    /**
+     * Delete the previous image associated with the ProgramPanti.
+     *
+     * @param string $filename
+     * @return void
+     */
+    private function deletePreviousImage($filename)
+    {
+        // Check if the filename is not null
+        if ($filename) {
+            // Delete the previous image from storage
+            Storage::delete('public/storage/' . $filename);
+        }
     }
 
     /**
@@ -62,6 +96,8 @@ class FotoProgramController extends Controller
      */
     public function destroy(FotoProgram $fotoProgram)
     {
-        //
+        $fotoProgram->delete();
+
+        return response()->json(["data" => $fotoProgram->id,"message" => "Berhasil menghapus foto program"], 200);
     }
 }
