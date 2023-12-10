@@ -6,12 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ProgramPanti;
 use App\Http\Requests\StoreProgramPantiRequest;
 use App\Http\Requests\UpdateProgramPantiRequest;
-<<<<<<< HEAD
-use App\Models\FotoProgram;
-use App\Models\JenisProgram;
-=======
 use Illuminate\Support\Facades\Storage;
->>>>>>> 8c07bd1eb592a8983710f3ce93f8ca2bee2865e0
+use App\Models\JenisProgram;
 
 class ProgramPantiController extends Controller
 {
@@ -20,12 +16,8 @@ class ProgramPantiController extends Controller
      */
     public function index()
     {
-<<<<<<< HEAD
         $program = ProgramPanti::with('jenis_program')->get();
         $jenis = JenisProgram::all();
-=======
-        $programPantis = ProgramPanti::with('foto_programs')->get();
->>>>>>> 8c07bd1eb592a8983710f3ce93f8ca2bee2865e0
 
         $data = [
             'program' => $program->toArray(),
@@ -42,21 +34,11 @@ class ProgramPantiController extends Controller
     {
         $data = $request->validated();
 
-<<<<<<< HEAD
         // Membuat program baru dengan data yang telah divalidasi
         $programPanti = ProgramPanti::create($data);
 
         // Mengambil file foto dari request dan menyimpannya
         $gambarPath = $request->file('gambar_thumbnail')->store('uploads/program-panti');
-=======
-        // menyimpan foto ke lokal storage
-        if ($request->hasFile('gambar_thumbnail')) {
-                $path = $request->file('gambar_thumbnail')->store('public/storage');
-                $filename = basename($path);
-                $data['gambar_thumbnail'] = $filename;
-        }
-        $programPanti = ProgramPanti::create($data);
->>>>>>> 8c07bd1eb592a8983710f3ce93f8ca2bee2865e0
 
         return response()->json(['message' => 'Berhasil menambahkan program panti', 'data' => $programPanti], 201);
     }
@@ -88,9 +70,8 @@ class ProgramPantiController extends Controller
             $this->deletePreviousImage($programPanti->gambar_thumbnail);
 
             // Store the new image
-            $path = $request->file('gambar_thumbnail')->store('public/storage');
-            $filename = basename($path);
-            $data['gambar_thumbnail'] = $filename;
+            $path = $request->file('gambar_thumbnail')->store('uploads/program');
+            $data['gambar_thumbnail'] = $path;
         }
 
         // Update the program with the validated data
