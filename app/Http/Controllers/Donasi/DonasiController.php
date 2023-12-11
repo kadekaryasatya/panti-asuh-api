@@ -42,7 +42,6 @@ class DonasiController extends Controller
             'nama' => 'required',
             'email' => 'required',
             'nominal' => 'required',
-            'tanggal_lulus' => 'required',
             'pesan' => 'required',
             'bukti_bayar' => 'required',
             'donatur' => 'required',
@@ -51,25 +50,26 @@ class DonasiController extends Controller
             'nama.required' => 'Data wajib diisi',
             'email.required' => 'Data wajib diisi',
             'nominal.required' => 'Data wajib diisi',
-            'tanggal_lulus.required' => 'Data wajib diisi',
             'pesan.required' => 'Data wajib diisi',
-            'pesan.required' => 'Data wajib diisi',
-            'pesan.required' => 'Data wajib diisi',
+            'bukti_bayar.required' => 'Data wajib diisi',
+            'donatur.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
         } else {
-            $gambarBukti = $request->file('bukti_lulus');
-            $pathBukti = 'bukti-lulus/';
+            $gambarBukti = $request->file('bukti_bayar');
+            $pathBukti = 'bukti-bayar/';
             $gambar_fileBukti = $gambarBukti->getClientOriginalName();
             $gambarBukti->move($pathBukti,$gambar_fileBukti);
 
             $data = [
-                'anak_id' => $request->anak_id,
-                'nama_jenjang' => $request->nama_jenjang,
-                'nama_sekolah' => $request->nama_sekolah,
-                'tanggal_lulus' => $request->tanggal_lulus,
-                'bukti_lulus' => $gambar_fileBukti,
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'nominal' => $request->nominal,
+                'pesan' => $request->pesan,
+                'bukti_bayar' => $gambar_fileBukti,
+                'donatur' => $request->donatur,
+                'isValid' => 'false',
             ];
 
             Donasi::create($data);
@@ -106,16 +106,10 @@ class DonasiController extends Controller
     public function update(Request $request, string $id)
     {
         $validasi = Validator::make($request->all(), [
-            'anak_id' => 'required',
-            'nama_jenjang' => 'required',
-            'nama_sekolah' => 'required',
-            'tanggal_lulus' => 'required',
+            'isValid' => 'required',
 
         ], [
-            'anak_id.required' => 'Data wajib diisi',
-            'nama_jenjang.required' => 'Data wajib diisi',
-            'nama_sekolah.required' => 'Data wajib diisi',
-            'tanggal_lulus.required' => 'Data wajib diisi',
+            'isValid.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
@@ -127,19 +121,8 @@ class DonasiController extends Controller
             return response()->json(['errors' => ['Data tidak ditemukan']]);
         }
 
-        $data->anak_id = $request->anak_id;
-        $data->nama_jenjang = $request->nama_jenjang;
-        $data->nama_sekolah = $request->nama_sekolah;
-        $data->tanggal_lulus = $request->tanggal_lulus;
+        $data->isValid = $request->isValid;
 
-        if ($request->hasFile('bukti_lulus')) {
-            $gambarBukti = $request->file('bukti_lulus');
-            $pathBukti = 'bukti-lulus/';
-            $gambar_fileBukti = $gambarBukti->getClientOriginalName();
-            $gambarBukti->move($pathBukti,$gambar_fileBukti);
-
-            $data->bukti_lulus = $gambar_fileBukti;
-        }
         $data->save();
 
         return response()->json(['success' => "Berhasil memperbarui data"]);

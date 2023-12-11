@@ -52,6 +52,7 @@ Route::apiResource('/anak-asuh', App\Http\Controllers\Anak\AnakAsuhController::c
 Route::apiResource('/kesehatan-anak', App\Http\Controllers\Anak\KesehatanAnakController::class);
 Route::apiResource('/pendidikan-anak', App\Http\Controllers\Anak\PendidikanAnakController::class);
 Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakController::class);
+Route::apiResource('/donasi', App\Http\Controllers\Donasi\DonasiController::class);
 
 // Routes without middleware
 Route::get('/artikel', [ArtikelController::class, 'index']);
