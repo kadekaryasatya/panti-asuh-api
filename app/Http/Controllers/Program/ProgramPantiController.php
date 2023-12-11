@@ -34,13 +34,19 @@ class ProgramPantiController extends Controller
     {
         $data = $request->validated();
 
-        // Membuat program baru dengan data yang telah divalidasi
-        $programPanti = ProgramPanti::create($data);
+        // menyimpan foto ke lokal storage
+        if ($request->hasFile('gambar_thumbnail')) {
+            $publicPath = 'program-panti/';
+            $path = $request->file('gambar_thumbnail')->store('uploads/program-panti');
+            $data['gambar_thumbnail']->move($publicPath,$path);
+            $filename = basename($path);
+            $data['gambar_thumbnail'] = $filename;
+        }
 
-        // Mengambil file foto dari request dan menyimpannya
-        $gambarPath = $request->file('gambar_thumbnail')->store('uploads/program-panti');
+    $programPanti = ProgramPanti::create($data);
 
-        return response()->json(['message' => 'Berhasil menambahkan program panti', 'data' => $programPanti], 201);
+
+        return response()->json(['message' => 'Berhasil menambahkan program panti'], 201);
     }
 
     /**
@@ -70,14 +76,15 @@ class ProgramPantiController extends Controller
             $this->deletePreviousImage($programPanti->gambar_thumbnail);
 
             // Store the new image
-            $path = $request->file('gambar_thumbnail')->store('uploads/program');
-            $data['gambar_thumbnail'] = $path;
+            $path = $request->file('gambar_thumbnail')->store('uploads/program-panti');
+            $filename = basename($path);
+            $data['gambar_thumbnail'] = $filename;
         }
 
         // Update the program with the validated data
         $programPanti->update($data);
 
-        return response()->json(['message' => 'Berhasil memperbarui program panti', 'data' => $programPanti]);
+        return response()->json(['message' => 'Berhasil memperbarui program panti'], 200);
     }
 
     /**
@@ -91,7 +98,7 @@ class ProgramPantiController extends Controller
         // Check if the filename is not null
         if ($filename) {
             // Delete the previous image from storage
-            Storage::delete('public/storage/' . $filename);
+            Storage::delete('uploads/program-panti/' . $filename);
         }
     }
 
@@ -103,6 +110,6 @@ class ProgramPantiController extends Controller
     {
         $programPanti->delete();
 
-        return response()->json(["data" => $programPanti->judul,"message" => "Berhasil menghapus program panti"], 200);
+        return response()->json(["message" => "Berhasil menghapus program panti"], 200);
     }
 }

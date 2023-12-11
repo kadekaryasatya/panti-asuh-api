@@ -19,6 +19,9 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('gambar_thumbnail');
             $table->string('isAdmin');
+            $table->string('isValid')->default('True');
+            $table->string('nama');
+            $table->string('email');
             $table->timestamps();
         });
     }
