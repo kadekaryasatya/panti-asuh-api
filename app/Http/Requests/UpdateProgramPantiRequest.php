@@ -29,6 +29,8 @@ class UpdateProgramPantiRequest extends FormRequest
             'jadwal' => 'required|max:100',
             'deskripsi' => 'required',
             'isValid' => 'required',
+            'nama' => 'nullable|max:255',
+            'email' => 'nullable|email:rfc,dns',
             'gambar_thumbnail' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_programs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];

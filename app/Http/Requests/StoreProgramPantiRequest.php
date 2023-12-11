@@ -31,6 +31,8 @@ class StoreProgramPantiRequest extends FormRequest
             'gambar_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'isAdmin' => 'required',
             'isValid' => 'nullable',
+            'nama' => 'nullable',
+            'email' => 'nullable',
             'foto_programs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }

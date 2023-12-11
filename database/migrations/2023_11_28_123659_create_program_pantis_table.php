@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('gambar_thumbnail');
             $table->string('isAdmin');
             $table->string('isValid')->default('True');
+            $table->string('nama');
+            $table->string('email');
             $table->timestamps();
         });
     }
