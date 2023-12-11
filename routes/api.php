@@ -53,5 +53,11 @@ Route::apiResource('/kesehatan-anak', App\Http\Controllers\Anak\KesehatanAnakCon
 Route::apiResource('/pendidikan-anak', App\Http\Controllers\Anak\PendidikanAnakController::class);
 Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakController::class);
 
-//Artikel
-Route::apiResource('artikel',ArtikelController::class);
+// Routes without middleware
+Route::get('/artikel', [ArtikelController::class, 'index']);
+Route::get('/artikel/{artikel}', [ArtikelController::class, 'show']);
+
+// Routes within the middleware group
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::apiResource('artikel', ArtikelController::class)->except(['index', 'show']);
+});

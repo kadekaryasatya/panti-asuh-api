@@ -39,7 +39,7 @@ class FotoProgramController extends Controller
 
         $fotoProgram = FotoProgram::create($data);
 
-        return response()->json(["data" => $fotoProgram, "message" => "Berhasil menambah foto program"], 201);
+        return response()->json(["message" => "Berhasil menambah foto program"], 201);
     }
 
     /**
@@ -73,7 +73,7 @@ class FotoProgramController extends Controller
 
         $fotoProgram->update($data);
 
-        return response()->json(["data" => $fotoProgram, "message" => "Berhasil memperbarui foto program"], 200);
+        return response()->json(["message" => "Berhasil memperbarui foto program"], 200);
     }
 
     /**
@@ -98,6 +98,6 @@ class FotoProgramController extends Controller
     {
         $fotoProgram->delete();
 
-        return response()->json(["data" => $fotoProgram->id,"message" => "Berhasil menghapus foto program"], 200);
+        return response()->json(["message" => "Berhasil menghapus foto program"], 200);
     }
 }

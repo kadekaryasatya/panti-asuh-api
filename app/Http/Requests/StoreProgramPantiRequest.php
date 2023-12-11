@@ -30,6 +30,7 @@ class StoreProgramPantiRequest extends FormRequest
             'deskripsi' => 'required',
             'gambar_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'isAdmin' => 'required',
+            'isValid' => 'nullable',
             'foto_programs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
