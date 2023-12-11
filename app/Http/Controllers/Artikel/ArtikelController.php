@@ -76,7 +76,8 @@ class ArtikelController extends Controller
      */
     public function show(Artikel $artikel)
     {
-        return response()->json($artikel,200);
+        $artikelWithUser = $artikel->with('users')->first();
+        return response()->json($artikelWithUser,200);
     }
 
     /**
