@@ -259,10 +259,10 @@
                         select.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
                     });
 
-                    var select = $('#editanak_id');
+                    var selectEdit = $('#editanak_id');
 
                     anak.forEach(function(anak) {
-                        select.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
+                        selectEdit.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
                     });
                     console.log(data);
                     // Build DataTables
@@ -284,7 +284,13 @@
                                 data: 'status'
                             },
                             {
-                                data: 'bukti_prestasi'
+                                data: 'bukti_prestasi',
+                                render: function(data, type, row) {
+                                    // Tampilkan gambar dengan tag <img>
+                                    return '<img src="{{ asset('bukti-prestasi') }}/' +
+                                        data +
+                                        '" alt="Bukti Prestasi" width="50" height="50">';
+                                }
                             },
                             {
                                 data: null,

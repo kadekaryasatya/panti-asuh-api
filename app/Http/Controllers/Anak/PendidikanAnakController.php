@@ -57,13 +57,17 @@ class PendidikanAnakController extends Controller
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
         } else {
-            $bukti_lulus = $request->file('bukti_lulus')->store('uploads/bukti_lulus');
+            $gambarBukti = $request->file('bukti_lulus');
+            $pathBukti = 'bukti-lulus/';
+            $gambar_fileBukti = $gambarBukti->getClientOriginalName();
+            $gambarBukti->move($pathBukti,$gambar_fileBukti);
+
             $data = [
                 'anak_id' => $request->anak_id,
                 'nama_jenjang' => $request->nama_jenjang,
                 'nama_sekolah' => $request->nama_sekolah,
                 'tanggal_lulus' => $request->tanggal_lulus,
-                'bukti_lulus' => $bukti_lulus,
+                'bukti_lulus' => $gambar_fileBukti,
             ];
 
             PendidikanAnakAsuh::create($data);
@@ -127,11 +131,12 @@ class PendidikanAnakController extends Controller
         $data->tanggal_lulus = $request->tanggal_lulus;
 
         if ($request->hasFile('bukti_lulus')) {
-            // Hapus file lama sebelum menyimpan yang baru
-            Storage::delete($data->bukti_lulus);
+            $gambarBukti = $request->file('bukti_lulus');
+            $pathBukti = 'bukti-lulus/';
+            $gambar_fileBukti = $gambarBukti->getClientOriginalName();
+            $gambarBukti->move($pathBukti,$gambar_fileBukti);
 
-            // Simpan file yang baru
-            $data->bukti_lulus = $request->file('bukti_lulus')->getClientOriginalName();
+            $data->bukti_lulus = $gambar_fileBukti;
         }
         $data->save();
 

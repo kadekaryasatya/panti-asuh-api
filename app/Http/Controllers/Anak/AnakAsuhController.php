@@ -68,9 +68,20 @@ class AnakAsuhController extends Controller
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
         } else {
-            $birthCertificatePath = $request->file('akta_kelahiran')->store('uploads/akta-kelahiran');
-            $familyCardPath = $request->file('kartu_keluarga')->store('uploads/kartu-keluarga');
-            $ktpPath = $request->file('ktp')->store('uploads/kartu-pengenal');
+            $gambarAkta = $request->file('akta_kelahiran');
+            $pathAkta = 'akta-kelahiran/';
+            $gambar_fileAkta = $gambarAkta->getClientOriginalName();
+            $gambarAkta->move($pathAkta,$gambar_fileAkta);
+
+            $gambarKk = $request->file('kartu_keluarga');
+            $pathKk = 'kartu-keluarga/';
+            $gambar_fileKk = $gambarKk->getClientOriginalName();
+            $gambarKk->move($pathKk,$gambar_fileKk);
+
+            $gambarKtp = $request->file('ktp');
+            $pathKtp = 'kartu-pengenal/';
+            $gambar_fileKtp = $gambarKtp->getClientOriginalName();
+            $gambarKtp->move($pathKtp,$gambar_fileKtp);
 
             $data = [
                 'nama' => $request->nama,
@@ -79,9 +90,9 @@ class AnakAsuhController extends Controller
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'agama' => $request->agama,
                 'status' => $request->status,
-                'akta_kelahiran' => $birthCertificatePath,
-                'kartu_keluarga' => $familyCardPath,
-                'ktp' => $ktpPath,
+                'akta_kelahiran' => $gambar_fileAkta,
+                'kartu_keluarga' => $gambar_fileKk,
+                'ktp' => $gambar_fileKtp,
             ];
 
             AnakAsuh::create($data);
@@ -159,10 +170,6 @@ class AnakAsuhController extends Controller
             return response()->json(['errors' => ['Anak tidak ditemukan']]);
         }
 
-        $birthCertificatePath = $request->file('akta_kelahiran')->store('uploads/akta-kelahiran');
-        $familyCardPath = $request->file('kartu_keluarga')->store('uploads/kartu-keluarga');
-        $ktpPath = $request->file('ktp')->store('uploads/kartu-pengenal');
-
         // Update data anak
         $data->nama = $request->nama;
         $data->tempat_lahir = $request->tempat_lahir;
@@ -170,28 +177,33 @@ class AnakAsuhController extends Controller
         $data->jenis_kelamin = $request->jenis_kelamin;
         $data->agama = $request->agama;
         $data->status = $request->status;
-        $data->akta_kelahiran = $birthCertificatePath;
-        $data->kartu_keluarga = $familyCardPath;
-        $data->ktp = $ktpPath;
-
-        // Periksa dan simpan file-file yang diunggah jika ada
         if ($request->hasFile('akta_kelahiran')) {
-            // Hapus file lama sebelum menyimpan yang baru
-            Storage::delete($data->akta_kelahiran);
+            $gambarAkta = $request->file('akta_kelahiran');
+            $pathAkta = 'akta-kelahiran/';
+            $gambar_fileAkta = $gambarAkta->getClientOriginalName();
+            $gambarAkta->move($pathAkta,$gambar_fileAkta);
 
-            // Simpan file yang baru
-            $data->akta_kelahiran = $request->file('akta_kelahiran')->getClientOriginalName();
+            $data->akta_kelahiran = $gambar_fileAkta;
         }
 
         if ($request->hasFile('kartu_keluarga')) {
-            Storage::delete($data->kartu_keluarga);
-            $data->kartu_keluarga = $request->file('kartu_keluarga')->getClientOriginalName();
+            $gambarKk = $request->file('kartu_keluarga');
+            $pathKk = 'kartu-keluarga/';
+            $gambar_fileKk = $gambarKk->getClientOriginalName();
+            $gambarKk->move($pathKk,$gambar_fileKk);
+
+            $data->kartu_keluarga = $gambar_fileKk;
         }
 
         if ($request->hasFile('ktp')) {
-            Storage::delete($data->ktp);
-            $data->ktp = $request->file('ktp')->getClientOriginalName();
+            $gambarKtp = $request->file('ktp');
+            $pathKtp = 'kartu-pengenal/';
+            $gambar_fileKtp = $gambarKtp->getClientOriginalName();
+            $gambarKtp->move($pathKtp,$gambar_fileKtp);
+
+            $data->ktp = $gambar_fileKtp;
         }
+
 
         // Simpan perubahan
         $data->save();

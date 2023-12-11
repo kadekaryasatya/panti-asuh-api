@@ -443,7 +443,9 @@
 
                 // Mengambil data formulir
                 var formData = new FormData(this);
-
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ', ' + pair[1]);
+                }
                 var idValue = formData.get('id');
 
                 // Kirim permintaan Ajax

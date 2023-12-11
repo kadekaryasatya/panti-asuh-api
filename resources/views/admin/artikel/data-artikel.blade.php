@@ -161,7 +161,7 @@
             axios.get('http://127.0.0.1:8000/api/artikel')
                 .then(function(response) {
                     // Handle successful response
-                    var data = response.data;
+                    var data = response.data.data;
                     data.forEach(function(item, index) {
                         item.nomer = index + 1;
                     });
@@ -180,28 +180,36 @@
                                 data: 'deskripsi'
                             },
                             {
-                                data: 'users.name'
+                                data: 'users',
+                                render: function(data, type, row) {
+                                    // Check if 'users' is available
+                                    if (data && data.name) {
+                                        return data.name;
+                                    }
+                                    return '';
+                                }
                             },
                             {
                                 data: 'gambar',
-                                // render: function(data, type, row) {
-                                //     // Tampilkan gambar dengan tag <img>
-                                //     return '<img src="' + data +
-                                //         '" alt="Gambar Artikel" width="50" height="50">';
-                                // }
+                                render: function(data, type, row) {
+                                    // Tampilkan gambar dengan tag <img>
+                                    return '<img src="{{ asset('artikel') }}/' +
+                                        data +
+                                        '" alt="Gambar Artikel" width="50" height="50">';
+                                }
                             },
                             {
                                 data: null,
                                 render: function(data, type, row) {
                                     // Customize your action buttons here
                                     return `
-                                    <button type="button" class="btn btn-primary btn-sm btn-edit">
-                                        <i class="bx bx-edit-alt me-1"></i> Edit
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm delete-data" data-id="${row.id}">
-                                        <i class="bx bx-trash me-1"></i> Delete
-                                    </button>
-                                `;
+                                <button type="button" class="btn btn-primary btn-sm btn-edit">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-data" data-id="${row.id}">
+                                    <i class="bx bx-trash me-1"></i> Delete
+                                </button>
+                            `;
                                 }
                             }
                         ]

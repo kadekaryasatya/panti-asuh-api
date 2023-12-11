@@ -9,6 +9,7 @@ use App\Http\Requests\StoreArtikelRequest;
 use App\Http\Requests\UpdateArtikelRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ArtikelController extends Controller
 {
@@ -17,21 +18,10 @@ class ArtikelController extends Controller
      */
     public function index()
     {
-        $artikels = Artikel::paginate(5);
-    
-        // Customize the pagination response
-        $paginationData = $artikels->toArray();
-    
+        $artikels = Artikel::with('users')->get();
+
         return response()->json([
-            'data' => $paginationData['data'],  // The paginated data
-            'pagination' => [
-                'total' => $paginationData['total'],
-                'per_page' => $paginationData['per_page'],
-                'current_page' => $paginationData['current_page'],
-                'last_page' => $paginationData['last_page'],
-                'from' => $paginationData['from'],
-                'to' => $paginationData['to'],
-            ],
+            'data' => $artikels,
         ], 200);
     }
 
@@ -52,7 +42,7 @@ class ArtikelController extends Controller
             'judul'=>'required|max:100',
             'deskripsi'=>'required|max:255',
             'gambar'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'pengurus_panti_id'=>'exists:pengurus_pantis,id',
+
         ], [
             'judul.required' => 'Data judul wajib diisi',
             'deskripsi.required' => 'Data deskripsi wajib diisi',
@@ -64,15 +54,17 @@ class ArtikelController extends Controller
         } else {
             // Upload image
             $gambar = $request->file('gambar');
-            $gambarPath = $gambar->storeAs('public/artikel', $gambar->hashName());
-    
+            $path = 'artikel/';
+            $gambar_file = $gambar->getClientOriginalName();
+            $gambar->move($path,$gambar_file);
+
             $data = [
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
-                'gambar' => $gambar->hashName(), // Use the file path, not hashName
-                'pengurus_panti_id' => $request->pengurus_panti_id,
+                'gambar' => $gambar_file,
+                'user_id' => $request->user_id,
             ];
-    
+
             Artikel::create($data);
 
             return response()->json(['success' => "Berhasil menyimpan data"]);
@@ -99,30 +91,28 @@ class ArtikelController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Artikel $artikel)
-{
-    $data = $request->validate([
-        'judul' => 'required|max:100',
-        'deskripsi' => 'required|max:255',
-        'pengurus_panti_id' => 'exists:pengurus_pantis,id',
-    ]);
+    {
+        $data = $request->validate([
+            'judul' => 'required|max:100',
+            'deskripsi' => 'required|max:255',
+            'pengurus_panti_id' => 'exists:pengurus_pantis,id',
+        ]);
 
-    // Check if a new image is provided
-    if ($request->hasFile('gambar')) {
-        // Upload the new image
-        $gambar = $request->file('gambar');
-        $gambarPath = $gambar->storeAs('public/artikel', $gambar->hashName());
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+            $path = 'artikel/';
+            $gambar_file = $request->team_name . "_" . $gambar->getClientOriginalName();
+            $gambar->move($path, $gambar_file);
 
-        // Delete the old image
-        Storage::delete($artikel->gambar);
+            // Update the gambar field in the $data array
+            $data['gambar'] = $gambar_file;
+        }
 
-        // Update the artikel with the new image file name
-        $data['gambar'] = $gambar->hashName();
+
+        $artikel->update($data);
+
+        return response()->json($artikel, 201);
     }
-
-    $artikel->update($data);
-
-    return response()->json($artikel, 201);
-}
 
 
     /**
@@ -133,11 +123,11 @@ class ArtikelController extends Controller
     {
         // Delete the associated image file
         Storage::delete($artikel->gambar);
-    
+
         // Delete the Artikel
         $artikel->delete();
-    
+
         return response()->json(['message' => 'Artikel deleted successfully'], 200);
     }
-    
+
 }

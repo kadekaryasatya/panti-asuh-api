@@ -2,13 +2,9 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-
-
         <h4 class="py-3 mb-4">
             <span class="text-muted fw-light">Anak Asuh /</span> <b>Pendidikan Anak Asuh</b>
         </h4>
-
-
         <!-- DataTable with Buttons -->
         <div class="card">
             <div class="d-flex pad-rem">
@@ -210,17 +206,16 @@
                         item.nomer = index + 1;
                     });
                     var select = $('#anak_id');
-                    select.empty();
                     select.append('<option value="" hidden>Pilih Anak Asuh</option>');
 
                     anak.forEach(function(anak) {
                         select.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
                     });
 
-                    var select = $('#editanak_id');
+                    var selectEdit = $('#editanak_id');
 
                     anak.forEach(function(anak) {
-                        select.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
+                        selectEdit.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
                     });
                     console.log(data);
                     // Build DataTables
@@ -242,7 +237,13 @@
                                 data: 'tanggal_lulus'
                             },
                             {
-                                data: 'bukti_lulus'
+                                data: 'bukti_lulus',
+                                render: function(data, type, row) {
+                                    // Tampilkan gambar dengan tag <img>
+                                    return '<img src="{{ asset('bukti-lulus') }}/' +
+                                        data +
+                                        '" alt="Bukti Lulus" width="50" height="50">';
+                                }
                             },
                             {
                                 data: null,

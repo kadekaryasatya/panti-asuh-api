@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Anak;
+namespace App\Http\Controllers\Donasi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PrestasiAnakAsuh;
+use App\Models\Donasi;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use App\Models\AnakAsuh;
 
-class PrestasiAnakController extends Controller
+
+
+class DonasiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $prestasiData = PrestasiAnakAsuh::with('anakAsuhs')->get();
-        $anakData = AnakAsuh::all();
+        $donasi = Donasi::get();
 
         $data = [
-            'prestasi' => $prestasiData->toArray(),
-            'anak' => $anakData->toArray(),
+            'donasi' => $donasi->toArray(),
         ];
 
         return response()->json($data, 200);
@@ -32,7 +30,7 @@ class PrestasiAnakController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -41,35 +39,40 @@ class PrestasiAnakController extends Controller
     public function store(Request $request)
     {
         $validasi = Validator::make($request->all(), [
-            'anak_id' => 'required',
-            'judul' => 'required',
-            'tanggal_lomba' => 'required',
-            'status' => 'required',
-            'bukti_prestasi' => 'required',
+            'nama' => 'required',
+            'email' => 'required',
+            'nominal' => 'required',
+            'tanggal_lulus' => 'required',
+            'pesan' => 'required',
+            'bukti_bayar' => 'required',
+            'donatur' => 'required',
 
         ], [
-            'anak_id.required' => 'Data wajib diisi',
-            'judul.required' => 'Data wajib diisi',
-            'tanggal_lomba.required' => 'Data wajib diisi',
-            'status.required' => 'Data wajib diisi',
-            'bukti_prestasi.required' => 'Data wajib diisi',
+            'nama.required' => 'Data wajib diisi',
+            'email.required' => 'Data wajib diisi',
+            'nominal.required' => 'Data wajib diisi',
+            'tanggal_lulus.required' => 'Data wajib diisi',
+            'pesan.required' => 'Data wajib diisi',
+            'pesan.required' => 'Data wajib diisi',
+            'pesan.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
         } else {
-            $gambarBukti = $request->file('bukti_prestasi');
-            $pathBukti = 'bukti-prestasi/';
+            $gambarBukti = $request->file('bukti_lulus');
+            $pathBukti = 'bukti-lulus/';
             $gambar_fileBukti = $gambarBukti->getClientOriginalName();
             $gambarBukti->move($pathBukti,$gambar_fileBukti);
+
             $data = [
                 'anak_id' => $request->anak_id,
-                'judul' => $request->judul,
-                'tanggal_lomba' => $request->tanggal_lomba,
-                'status' => $request->status,
-                'bukti_prestasi' => $gambar_fileBukti,
+                'nama_jenjang' => $request->nama_jenjang,
+                'nama_sekolah' => $request->nama_sekolah,
+                'tanggal_lulus' => $request->tanggal_lulus,
+                'bukti_lulus' => $gambar_fileBukti,
             ];
 
-            PrestasiAnakAsuh::create($data);
+            Donasi::create($data);
 
             return response()->json(['success' => "Berhasil menyimpan data"]);
         }
@@ -80,7 +83,7 @@ class PrestasiAnakController extends Controller
      */
     public function show(string $id)
     {
-        $data = PrestasiAnakAsuh::find($id);
+        $data = Donasi::find($id);
         if (!$data) {
             return response()->json(['errors' => ['Data tidak ditemukan']]);
         }
@@ -94,7 +97,7 @@ class PrestasiAnakController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
     }
 
     /**
@@ -104,38 +107,38 @@ class PrestasiAnakController extends Controller
     {
         $validasi = Validator::make($request->all(), [
             'anak_id' => 'required',
-            'judul' => 'required',
-            'tanggal_lomba' => 'required',
-            'status' => 'required',
+            'nama_jenjang' => 'required',
+            'nama_sekolah' => 'required',
+            'tanggal_lulus' => 'required',
 
         ], [
             'anak_id.required' => 'Data wajib diisi',
-            'judul.required' => 'Data wajib diisi',
-            'tanggal_lomba.required' => 'Data wajib diisi',
-            'status.required' => 'Data wajib diisi',
+            'nama_jenjang.required' => 'Data wajib diisi',
+            'nama_sekolah.required' => 'Data wajib diisi',
+            'tanggal_lulus.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
-            return response()->json(['errors' => $validasi->errors()]);
+            return response()->json(['errors' => $validasi->errors()], 400);
         }
 
-        $data = PrestasiAnakAsuh::find($id);
+        $data = Donasi::find($id);
 
         if (!$data) {
-            return response()->json(['errors' => ['Data tidak ditemukan']], 400);
+            return response()->json(['errors' => ['Data tidak ditemukan']]);
         }
 
         $data->anak_id = $request->anak_id;
-        $data->judul = $request->judul;
-        $data->tanggal_lomba = $request->tanggal_lomba;
-        $data->status = $request->status;
+        $data->nama_jenjang = $request->nama_jenjang;
+        $data->nama_sekolah = $request->nama_sekolah;
+        $data->tanggal_lulus = $request->tanggal_lulus;
 
-        if ($request->hasFile('bukti_prestasi')) {
-            $gambarBukti = $request->file('bukti_prestasi');
-            $pathBukti = 'bukti-prestasi/';
+        if ($request->hasFile('bukti_lulus')) {
+            $gambarBukti = $request->file('bukti_lulus');
+            $pathBukti = 'bukti-lulus/';
             $gambar_fileBukti = $gambarBukti->getClientOriginalName();
             $gambarBukti->move($pathBukti,$gambar_fileBukti);
 
-            $data->bukti_prestasi = $gambar_fileBukti;
+            $data->bukti_lulus = $gambar_fileBukti;
         }
         $data->save();
 
@@ -147,7 +150,7 @@ class PrestasiAnakController extends Controller
      */
     public function destroy(string $id)
     {
-        PrestasiAnakAsuh::find($id)->delete();
+        Donasi::find($id)->delete();
         return response()->json(['success'=>'Data berhasil Dihapus']);
     }
 }

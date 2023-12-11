@@ -289,26 +289,6 @@
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mendapatkan elemen-elemen yang dibutuhkan
-            var searchForm = document.getElementById('searchForm');
-            var searchInput = document.getElementById('search');
-            var clearSearch = document.getElementById('clearSearch');
-
-            // Menambahkan event listener untuk menghapus pencarian
-            clearSearch.addEventListener('click', function() {
-                searchInput.value = '';
-                searchForm.submit(); // Mengirim formulir setelah menghapus pencarian
-            });
-
-            // Menambahkan event listener untuk mengirim formulir saat nilai input berubah
-            searchForm.addEventListener('submit', function() {
-                searchForm.submit();
-            });
-        });
-    </script>
-
     <!-- Add these CDN links in your HTML head section -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
