@@ -36,10 +36,13 @@ class ProgramPantiController extends Controller
 
         // menyimpan foto ke lokal storage
         if ($request->hasFile('gambar_thumbnail')) {
+            $publicPath = 'program-panti/';
             $path = $request->file('gambar_thumbnail')->store('uploads/program-panti');
+            $data['gambar_thumbnail']->move($publicPath,$path);
             $filename = basename($path);
             $data['gambar_thumbnail'] = $filename;
-    }
+        }
+
     $programPanti = ProgramPanti::create($data);
 
 
