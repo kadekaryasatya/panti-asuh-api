@@ -43,7 +43,7 @@ class ProgramPantiController extends Controller
     $programPanti = ProgramPanti::create($data);
 
 
-        return response()->json(['message' => 'Berhasil menambahkan program panti', 'data' => $programPanti], 201);
+        return response()->json(['message' => 'Berhasil menambahkan program panti'], 201);
     }
 
     /**
@@ -81,7 +81,7 @@ class ProgramPantiController extends Controller
         // Update the program with the validated data
         $programPanti->update($data);
 
-        return response()->json(['message' => 'Berhasil memperbarui program panti', 'data' => $programPanti]);
+        return response()->json(['message' => 'Berhasil memperbarui program panti'], 200);
     }
 
     /**
@@ -107,6 +107,6 @@ class ProgramPantiController extends Controller
     {
         $programPanti->delete();
 
-        return response()->json(["data" => $programPanti->judul,"message" => "Berhasil menghapus program panti"], 200);
+        return response()->json(["message" => "Berhasil menghapus program panti"], 200);
     }
 }

@@ -28,7 +28,7 @@ class JenisProgramController extends Controller
 
         $jenisProgram = JenisProgram::create($data);
 
-        return response()->json(["data" => $jenisProgram, "message" => "Berhasil membuat jenis program"], 201);
+        return response()->json(["message" => "Berhasil membuat jenis program"], 201);
     }
 
     /**
@@ -52,7 +52,7 @@ class JenisProgramController extends Controller
 
         $jenisProgram->update($data);
 
-        return response()->json(["data" => $jenisProgram, "message" => "Berhasil memperbarui jenis program"], 200);
+        return response()->json(["message" => "Berhasil memperbarui jenis program"], 200);
     }
 
     /**
@@ -62,6 +62,6 @@ class JenisProgramController extends Controller
     {
         $jenisProgram->delete();
 
-        return response()->json(["data" => $jenisProgram->nama,"message" => "Berhasil menghapus jenis program"], 200);
+        return response()->json(["message" => "Berhasil menghapus jenis program"], 200);
     }
 }
