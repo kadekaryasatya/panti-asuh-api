@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
                                 <span class="fw-medium d-block mb-1">Anak Panti</span>
-                                <h3 class="card-title mb-2">0</h3>
+                                <h3 class="card-title mb-2">{{ $countAnak }}</h3>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                                 <span>Pengurus Panti</span>
-                                <h3 class="card-title text-nowrap mb-1">0</h3>
+                                <h3 class="card-title text-nowrap mb-1">{{ $countPengurus }}</h3>
                             </div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                     </div>
                                 </div>
                                 <span class="d-block mb-1">Program</span>
-                                <h3 class="card-title text-nowrap mb-2">3</h3>
+                                <h3 class="card-title text-nowrap mb-2">{{ $countProgram }}</h3>
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                                     </div>
                                 </div>
                                 <span class="fw-medium d-block mb-1">Artikel</span>
-                                <h3 class="card-title mb-2">2</h3>
+                                <h3 class="card-title mb-2">{{ $countArtikel }}</h3>
                             </div>
                         </div>
                     </div>
@@ -195,13 +195,10 @@
                                 <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
                                     <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                                         <div class="card-title">
-                                            <h5 class="text-nowrap mb-2">Profile Report</h5>
-                                            <span class="badge bg-label-warning rounded-pill">Year 2021</span>
+                                            <h5 class="text-nowrap mb-2">Total Donasi</h5>
                                         </div>
                                         <div class="mt-sm-auto">
-                                            <small class="text-success text-nowrap fw-medium"><i
-                                                    class="bx bx-chevron-up"></i> 68.2%</small>
-                                            <h3 class="mb-0">$84,686k</h3>
+                                            <h3 class="mb-0">Rp{{ $countDonasi }}</h3>
                                         </div>
                                     </div>
                                     <div id="profileReportChart"></div>

@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnakAsuh;
+use App\Models\Artikel;
+use App\Models\Donasi;
+use App\Models\PengurusPanti;
+use App\Models\ProgramPanti;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,7 +28,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $countAnak = AnakAsuh::count();
+        $countPengurus = PengurusPanti::count();
+        $countProgram = ProgramPanti::count();
+        $countArtikel = Artikel::count();
+        $countDonasi = Donasi::sum('nominal');
+        return view('home', compact('countAnak', 'countPengurus', 'countProgram', 'countArtikel', 'countDonasi'));
     }
 
     public function dataAnak(){
