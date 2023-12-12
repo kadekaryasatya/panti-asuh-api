@@ -14,7 +14,7 @@
             <div class="d-flex pad-rem">
                 <div class="w-75 mt-3 mb-3 quick-sand">
                     <h3>
-                        Tabel Data Artikel
+                        Tabel Data Program
                     </h3>
                 </div>
                 <div class="col-lg-3 col-md-6 quick-sand">
@@ -27,7 +27,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#basicModal">
                                 <i class='bx bx-plus m-1'></i>
-                                Tambah Data Artikel
+                                Tambah Data Program
                             </button>
                         </div>
                         <!-- Modal -->
@@ -35,7 +35,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Artikel
+                                        <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Program
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
