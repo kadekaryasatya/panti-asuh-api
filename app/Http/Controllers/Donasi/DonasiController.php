@@ -65,7 +65,7 @@ class DonasiController extends Controller
                 'pesan' => $request->pesan,
                 'bukti_bayar' => $gambar_fileBukti,
                 'donatur' => $request->donatur,
-                'isValid' => 'pending',
+                'status' => 'pending',
             ];
 
             Donasi::create($data);
@@ -102,10 +102,10 @@ class DonasiController extends Controller
     public function update(Request $request, string $id)
     {
         $validasi = Validator::make($request->all(), [
-            'isValid' => 'required',
+            'status' => 'required',
 
         ], [
-            'isValid.required' => 'Data wajib diisi',
+            'status.required' => 'Data wajib diisi',
         ]);
         if ($validasi->fails()) {
             return response()->json(['errors' => $validasi->errors()], 400);
@@ -117,7 +117,7 @@ class DonasiController extends Controller
             return response()->json(['errors' => ['Data tidak ditemukan']]);
         }
 
-        $data->isValid = $request->isValid;
+        $data->status = $request->status;
 
         $data->save();
 

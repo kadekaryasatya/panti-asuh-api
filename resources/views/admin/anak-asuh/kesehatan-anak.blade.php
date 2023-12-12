@@ -55,9 +55,6 @@
                                                 <select class="form-select" id="penyakit_id" name="penyakit_id"
                                                     aria-label="Default select example">
                                                     <option value="" hidden>Pilih Penyakit</option>
-                                                    <option value="1">Batuk</option>
-                                                    <option value="2">Demam</option>
-                                                    <option value="3">Flu</option>
                                                 </select>
                                                 <div id="penyakit_idError" class="invalid-feedback"></div>
                                             </div>
@@ -87,7 +84,7 @@
                                             <div class="col mb-3">
                                                 <label for="obat_penyakit" class="form-label">Obat Penyakit</label>
                                                 <input type="text" id="obat_penyakit" name="obat_penyakit"
-                                                    class="form-control" placeholder="Nama Anak ..." />
+                                                    class="form-control" placeholder="Obat..." readonly />
                                                 <div id="obat_penyakitError" class="invalid-feedback"></div>
                                             </div>
                                         </div>
@@ -126,9 +123,6 @@
                                                 <select class="form-select" id="editpenyakit_id" name="penyakit_id"
                                                     aria-label="Default select example">
                                                     <option value="" hidden>Pilih Penyakit</option>
-                                                    <option value="1">Batuk</option>
-                                                    <option value="2">Demam</option>
-                                                    <option value="3">Flu</option>
                                                 </select>
                                                 <div id="editpenyakit_idError" class="invalid-feedback"></div>
                                             </div>
@@ -158,7 +152,7 @@
                                             <div class="col mb-3">
                                                 <label for="editobat_penyakit" class="form-label">Obat Penyakit</label>
                                                 <input type="text" id="editobat_penyakit" name="obat_penyakit"
-                                                    class="form-control" placeholder="Nama Anak ..." />
+                                                    class="form-control" placeholder="" readonly />
                                                 <div id="editobat_penyakitError" class="invalid-feedback"></div>
                                             </div>
                                         </div>
@@ -213,6 +207,78 @@
         $(document).ready(function() {
             // Fetch data using Axios
             const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            axios.get('http://127.0.0.1:3000/api/obat-penyakit')
+                .then(function(response) {
+                    // Handle successful response
+                    console.log(response.data);
+
+                    // Inisialisasi array untuk menyimpan nama penyakit dan obat
+                    var namaPenyakit = [];
+
+                    // Loop melalui data respons
+                    response.data.forEach(function(item) {
+                        // Ambil dan tambahkan nama penyakit dan obat ke dalam array
+                        namaPenyakit.push({
+                            penyakit: item.penyakit,
+                            obat: item.obat
+                        });
+                    });
+
+                    // Mengisi opsi pada elemen select dengan id penyakit_id
+                    var selectPenyakit = $('#penyakit_id');
+                    selectPenyakit.append('<option value="" hidden>Pilih Penyakit</option>');
+
+                    namaPenyakit.forEach(function(data) {
+                        selectPenyakit.append('<option value="' + data.penyakit + '">' + data.penyakit +
+                            '</option>');
+                    });
+
+                    // Menangani perubahan pada elemen select dengan id penyakit_id
+                    selectPenyakit.on('change', function() {
+                        // Mendapatkan nilai penyakit yang dipilih
+                        var selectedPenyakit = $(this).val();
+
+                        // Menemukan data obat yang sesuai dengan penyakit yang dipilih
+                        var obatData = namaPenyakit.find(function(item) {
+                            return item.penyakit === selectedPenyakit;
+                        });
+
+                        // Mengisi nilai pada elemen input dengan id obat_penyakit
+                        $('#obat_penyakit').val(obatData ? obatData.obat : '');
+                    });
+
+                    var editSelectPenyakit = $('#editpenyakit_id');
+
+                    namaPenyakit.forEach(function(data) {
+                        editSelectPenyakit.append('<option value="' + data.penyakit + '">' + data
+                            .penyakit +
+                            '</option>');
+                    });
+
+                    // Menangani perubahan pada elemen select dengan id penyakit_id
+                    editSelectPenyakit.on('change', function() {
+                        // Mendapatkan nilai penyakit yang dipilih
+                        var editSelectPenyakit = $(this).val();
+
+                        // Menemukan data obat yang sesuai dengan penyakit yang dipilih
+                        var editObatData = namaPenyakit.find(function(item) {
+                            return item.penyakit === editSelectPenyakit;
+                        });
+
+                        // Mengisi nilai pada elemen input dengan id obat_penyakit
+                        $('#editobat_penyakit').val(editObatData ? editObatData.obat : '');
+                    });
+                })
+                .catch(function(error) {
+                    // Handle error
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Fetch data using Axios
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
             axios.get('http://127.0.0.1:8000/api/kesehatan-anak')
                 .then(function(response) {
                     // Handle successful response
@@ -232,7 +298,7 @@
 
                     var selectEdit = $('#editanak_id');
                     anak.forEach(function(anak) {
-                        selectEdit  .append('<option value="' + anak.id + '">' + anak.nama + '</option>');
+                        selectEdit.append('<option value="' + anak.id + '">' + anak.nama + '</option>');
                     });
                     console.log(data);
                     // Build DataTables
@@ -353,17 +419,6 @@
                 });
         });
     </script>
-
-    {{-- <script>
-        axios.get('http://127.0.0.1:8000/api/kesehatan-anak')
-            .then(function(response) {
-                console.log(response.data);
-                // Proses respons data di sini
-            })
-            .catch(function(error) {
-                console.error('Error fetching data:', error);
-            });
-    </script> --}}
 
     <script>
         $(document).ready(function() {

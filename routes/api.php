@@ -55,6 +55,7 @@ Route::apiResource('/prestasi-anak', App\Http\Controllers\Anak\PrestasiAnakContr
 Route::apiResource('/donasi', App\Http\Controllers\Donasi\DonasiController::class);
 
 // Routes without middleware
+Route::put('/update-status/{program_panti}', [ProgramPantiController::class, 'updateStatus']);
 Route::get('/artikel', [ArtikelController::class, 'index']);
 Route::get('/artikel/{artikel}', [ArtikelController::class, 'show']);
 

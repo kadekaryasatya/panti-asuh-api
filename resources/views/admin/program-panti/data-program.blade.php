@@ -5,7 +5,7 @@
 
 
         <h4 class="py-3 mb-4">
-            <span class="text-muted fw-light">Artikel /</span> <b>Data Artikel</b>
+            <span class="text-muted fw-light">Program Panti /</span> <b>Data Program</b>
         </h4>
 
 
@@ -42,6 +42,9 @@
                                     </div>
                                     <form id="dataForm">
                                         <div class="modal-body">
+                                            <input type="text" value="admin" name="nama" hidden>
+                                            <input type="text" value="admin@gmail.com" name="email" hidden>
+                                            <input type="text" value="setuju" name="status" hidden>
                                             <div class="mb-3">
                                                 <label for="jenis_program_id" class="form-label">Jenis Kegiatan</label>
                                                 <select class="form-select" id="jenis_program_id" name="jenis_program_id"
@@ -51,7 +54,6 @@
                                                 <div id="jenis_program_idError" class="invalid-feedback"></div>
                                             </div>
                                             <div class="row">
-                                                <input type="text" hidden value="True" name="isAdmin">
                                                 <div class="col mb-3">
                                                     <label for="judul" class="form-label">Nama Program</label>
                                                     <input type="text" id="judul" name="judul" class="form-control"
@@ -74,7 +76,7 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="gambar_thumbnail" class="form-label">GambarThumbnail
+                                                <label for="gambar_thumbnail" class="form-label">Gambar Thumbnail
                                                     Program</label>
                                                 <input class="form-control" type="file" id="gambar_thumbnail"
                                                     name="gambar_thumbnail" />
@@ -94,7 +96,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel1">Edit Data Anak
+                                        <h5 class="modal-title" id="exampleModalLabel1">Edit Data Program
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
@@ -165,7 +167,9 @@
                             <th class="col-md-1 text-center fw-bold">Judul</th>
                             <th class="col-md-1 text-center fw-bold">Jadwal</th>
                             <th class="col-md-1 text-center fw-bold">Deskripsi</th>
-                            <th class="col-md-1 text-center fw-bold">Dibuat Oleh</th>
+                            <th class="col-md-1 text-center fw-bold">Nama</th>
+                            <th class="col-md-1 text-center fw-bold">Email</th>
+                            <th class="col-md-1 text-center fw-bold">Status</th>
                             <th class="col-md-2 text-center fw-bold">Action</th>
                         </tr>
                     </thead>
@@ -239,7 +243,36 @@
                                 data: 'deskripsi'
                             },
                             {
-                                data: 'isAdmin'
+                                data: 'nama'
+                            },
+                            {
+                                data: 'email'
+                            },
+                            {
+                                data: 'status',
+                                render: function(data, type, row) {
+
+                                    // Customize your action buttons here
+                                    if (row.status == 'disetujui') {
+                                        return `
+                                                <button type="button" class="btn btn-success btn-sm" >
+                                                    <i class='bx bx-check'></i>Disetujui
+                                                </button>
+                                            `;
+                                    } else if (row.status == 'pending') {
+                                        return `
+                                                <button type="button" class="btn btn-warning btn-sm update-data" data-id="${row.id}">
+                                                    <i class='bx bxs-hourglass-top'></i>Pending
+                                                </button>
+                                            `;
+                                    } else {
+                                        return `
+                                                <button type="button" class="btn btn-danger btn-sm">
+                                                    <i class='bx bx-x'></i>Ditolak
+                                                </button>
+                                            `;
+                                    }
+                                }
                             },
                             {
                                 data: null,
@@ -257,6 +290,75 @@
                             }
                         ]
                     });
+
+                    $('#dataTable').on('click', '.update-data', function() {
+                        var tr = $(this).closest('tr');
+
+                        // Check if a valid DataTable row is available
+                        if (dataTable && tr.length > 0) {
+                            var row = dataTable.row(tr).data();
+                            if (row) {
+                                dataId = row.id; // Assign value to dataId
+                                Swal.fire({
+                                    title: 'Mengkonfirmasi Data Donasi!',
+                                    text: 'Bagaimana Status Data Donasi Berikut?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Disetujui',
+                                    cancelButtonText: 'Ditolak',
+                                    showCloseButton: true,
+                                    reverseButtons: true
+                                }).then(function(result) {
+                                    if (result.isConfirmed) {
+                                        // Send update request with 'success' status
+                                        sendUpdateRequest('disetujui');
+                                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                        // User clicked 'Gagal'
+                                        // Send update request with 'failure' status
+                                        sendUpdateRequest('ditolak');
+                                    }
+                                });
+                            } else {
+                                console.error('Error: Unable to retrieve DataTable row data.');
+                            }
+                        } else {
+                            console.error('Error: Invalid DataTable or row element.');
+                        }
+                    });
+
+                    function sendUpdateRequest(status) {
+                        // Send update request using Axios
+                        axios.put(`http://127.0.0.1:8000/api/update-status/${dataId}`, {
+                                status: status
+                            })
+                            .then(function(response) {
+                                // Handle success
+                                console.log('Data berhasil diupdate:', response.data);
+
+                                // Show success message using SweetAlert2
+                                Swal.fire({
+                                    title: 'Sukses!',
+                                    text: 'Data berhasil diupdate.',
+                                    icon: 'success'
+                                }).then(function() {
+                                    // Reload the page after clicking "OK" on SweetAlert2
+                                    location.reload();
+                                });
+                            })
+                            .catch(function(error) {
+                                // Handle error
+                                console.error('Error updating data:', error);
+
+                                // Show error message using SweetAlert2
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Terjadi kesalahan saat mengupdate data.',
+                                    icon: 'error'
+                                });
+                            });
+                    }
 
                     $('#dataTable').on('click', '.btn-edit', function() {
                         var tr = $(this).closest('tr');

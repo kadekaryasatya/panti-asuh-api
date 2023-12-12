@@ -173,7 +173,7 @@
                     </li>
                     <li class="menu-item {{ request()->is('donasi/data-donasi') ? 'active' : '' }}">
                         <a href="{{ route('data-donasi.index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-medal"></i>
+                            <i class='bx bxs-donate-heart'></i>
                             <div data-i18n="Documentation">Data Donasi</div>
                         </a>
                     </li>

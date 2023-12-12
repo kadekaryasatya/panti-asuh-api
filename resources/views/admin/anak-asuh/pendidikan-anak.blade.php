@@ -54,23 +54,24 @@
                                                     <option value="TK">TK</option>
                                                     <option value="SD">SD</option>
                                                     <option value="SMP">SMP</option>
-                                                    <option value="SMA">SMA</option>
-                                                    <option value="SMK">SMK</option>
+                                                    <option value="SMA">SMA/K</option>
                                                 </select>
                                                 <div id="nama_jenjangError" class="invalid-feedback"></div>
                                             </div>
                                             <div class="mb-3">
+                                                <label for="nama_sekolah" class="form-label">Pilih Sekolah</label>
+                                                <select class="form-select" id="nama_sekolah" name="nama_sekolah"
+                                                    aria-label="Default select example">
+                                                    <option value="" hidden>Pilih Jenjang Pendidikan</option>
+                                                </select>
+                                                <div id="nama_sekolahError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="tanggal_lulus" class="form-label">Tanggal
-                                                    Sakit</label>
+                                                    Lulus</label>
                                                 <input class="form-control" type="date" id="tanggal_lulus"
                                                     name="tanggal_lulus" />
                                                 <div id="tanggal_lulusError" class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col mb-3">
-                                                <label for="nama_sekolah" class="form-label">Nama Sekolah</label>
-                                                <input type="text" id="nama_sekolah" name="nama_sekolah"
-                                                    class="form-control" placeholder="Nama Sekolah ..." />
-                                                <div id="nama_sekolahError" class="invalid-feedback"></div>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="bukti_lulus" class="form-label">Bukti Kelulusan
@@ -119,23 +120,24 @@
                                                     <option value="TK">TK</option>
                                                     <option value="SD">SD</option>
                                                     <option value="SMP">SMP</option>
-                                                    <option value="SMA">SMA</option>
-                                                    <option value="SMK">SMK</option>
+                                                    <option value="SMA">SMA/K</option>
                                                 </select>
                                                 <div id="editnama_jenjangError" class="invalid-feedback"></div>
                                             </div>
                                             <div class="mb-3">
+                                                <label for="editnama_sekolah" class="form-label">Pilih Sekolah</label>
+                                                <select class="form-select" id="editnama_sekolah" name="nama_sekolah"
+                                                    aria-label="Default select example">
+                                                    <option value="" hidden>Pilih Jenjang Pendidikan</option>
+                                                </select>
+                                                <div id="editnama_sekolahError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="edittanggal_lulus" class="form-label">Tanggal
-                                                    Sakit</label>
+                                                    Lulus</label>
                                                 <input class="form-control" type="date" id="edittanggal_lulus"
                                                     name="tanggal_lulus" />
                                                 <div id="edittanggal_lulusError" class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="col mb-3">
-                                                <label for="editnama_sekolah" class="form-label">Nama Sekolah</label>
-                                                <input type="text" id="editnama_sekolah" name="nama_sekolah"
-                                                    class="form-control" placeholder="Nama Sekolah ..." />
-                                                <div id="editnama_sekolahError" class="invalid-feedback"></div>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="editbukti_lulus" class="form-label">Bukti Kelulusan
@@ -191,6 +193,62 @@
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Fetch data using Axios
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            axios.get('http://127.0.0.1:3000/api/sekolah')
+                .then(function(response) {
+                    // Handle successful response
+                    console.log(response.data);
+
+                    // Simpan data sekolah dari API
+                    var sekolahData = response.data;
+
+                    // Menangani perubahan pada elemen select dengan id nama_jenjang
+                    $('#nama_jenjang').on('change', function() {
+                        // Mendapatkan nilai jenjang yang dipilih
+                        var selectedJenjang = $(this).val();
+
+                        // Mengisi opsi pada elemen select dengan id nama_sekolah
+                        var selectSekolah = $('#nama_sekolah');
+                        selectSekolah.empty(); // Kosongkan opsi sebelum menambahkan yang baru
+                        selectSekolah.append('<option value="" hidden>Pilih Sekolah</option>');
+
+                        // Menampilkan hanya sekolah dengan jenjang yang sesuai
+                        sekolahData.forEach(function(sekolah) {
+                            if (sekolah.jenjang === selectedJenjang) {
+                                selectSekolah.append('<option value="' + sekolah.nama + '">' +
+                                    sekolah.nama + '</option>');
+                            }
+                        });
+                    });
+                    // Menangani perubahan pada elemen select dengan id nama_jenjang
+                    $('#editnama_jenjang').on('change', function() {
+                        // Mendapatkan nilai jenjang yang dipilih
+                        var editSelectedJenjang = $(this).val();
+
+                        // Mengisi opsi pada elemen select dengan id nama_sekolah
+                        var editSelectSekolah = $('#editnama_sekolah');
+                        editSelectSekolah.empty(); // Kosongkan opsi sebelum menambahkan yang baru
+                        editSelectSekolah.append('<option value="" hidden>Pilih Sekolah</option>');
+
+                        // Menampilkan hanya sekolah dengan jenjang yang sesuai
+                        sekolahData.forEach(function(sekolah) {
+                            if (sekolah.jenjang === editSelectedJenjang) {
+                                editSelectSekolah.append('<option value="' + sekolah.nama +
+                                    '">' +
+                                    sekolah.nama + '</option>');
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    // Handle error
+                    console.error('Error fetching data:', error);
+                });
+        });
     </script>
     <script>
         $(document).ready(function() {

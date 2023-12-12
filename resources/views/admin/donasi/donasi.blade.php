@@ -20,18 +20,6 @@
                 <div class="col-lg-3 col-md-6 quick-sand">
                     <div class="mt-3 mb-3">
                         <!-- Modal -->
-                        <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Anak
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -119,17 +107,17 @@
                                 data: 'donatur'
                             },
                             {
-                                data: 'isValid',
+                                data: 'status',
                                 render: function(data, type, row) {
 
                                     // Customize your action buttons here
-                                    if (row.isValid == 'berhasil') {
+                                    if (row.status == 'berhasil') {
                                         return `
                                                 <button type="button" class="btn btn-success btn-sm" >
                                                     <i class='bx bx-check'></i>Berhasil
                                                 </button>
                                             `;
-                                    } else if (row.isValid == 'pending') {
+                                    } else if (row.status == 'pending') {
                                         return `
                                                 <button type="button" class="btn btn-warning btn-sm update-data" data-id="${row.id}">
                                                     <i class='bx bxs-hourglass-top'></i>Pending
@@ -171,8 +159,8 @@
                             if (row) {
                                 dataId = row.id; // Assign value to dataId
                                 Swal.fire({
-                                    title: 'Konfirmasi Hapus Data',
-                                    text: 'Apakah Anda yakin ingin menghapus data ini?',
+                                    title: 'Mengkonfirmasi Data Donasi!',
+                                    text: 'Bagaimana Status Data Donasi Berikut?',
                                     icon: 'warning',
                                     showCancelButton: true,
                                     confirmButtonColor: '#3085d6',
@@ -234,7 +222,7 @@
                     function sendUpdateRequest(status) {
                         // Send update request using Axios
                         axios.put(`http://127.0.0.1:8000/api/donasi/${dataId}`, {
-                                isValid: status
+                                status: status
                             })
                             .then(function(response) {
                                 // Handle success

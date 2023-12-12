@@ -8,6 +8,8 @@ use App\Http\Requests\StoreProgramPantiRequest;
 use App\Http\Requests\UpdateProgramPantiRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\JenisProgram;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class ProgramPantiController extends Controller
 {
@@ -43,7 +45,7 @@ class ProgramPantiController extends Controller
             $data['gambar_thumbnail'] = $filename;
         }
 
-    $programPanti = ProgramPanti::create($data);
+        $programPanti = ProgramPanti::create($data);
 
 
         return response()->json(['message' => 'Berhasil menambahkan program panti'], 201);
@@ -85,6 +87,26 @@ class ProgramPantiController extends Controller
         $programPanti->update($data);
 
         return response()->json(['message' => 'Berhasil memperbarui program panti'], 200);
+    }
+
+    public function updateStatus(Request $request, ProgramPanti $programPanti){
+        $validasi = Validator::make($request->all(), [
+            'status' => 'required',
+
+        ], [
+            'status.required' => 'Data wajib diisi',
+        ]);
+        if ($validasi->fails()) {
+            return response()->json(['errors' => $validasi->errors()], 400);
+        }
+
+        $data = [
+            'status' => $request->status
+        ];
+
+        $programPanti->update($data);
+
+        return response()->json(['success' => "Berhasil memperbarui data"]);
     }
 
     /**
