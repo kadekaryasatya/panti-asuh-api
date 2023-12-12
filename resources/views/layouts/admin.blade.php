@@ -50,6 +50,12 @@
     <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
     <style>
         #dataTable_wrapper .dataTables_paginate .paginate_button .dataTables_length label {
             font-family: Satoshi-Variable;
@@ -161,6 +167,14 @@
                         <a href="{{ route('prestasi-anak.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-medal"></i>
                             <div data-i18n="Documentation">Prestasi Anak Asuh</div>
+                        </a>
+                    </li>
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Donasi</span>
+                    </li>
+                    <li class="menu-item {{ request()->is('donasi/data-donasi') ? 'active' : '' }}">
+                        <a href="{{ route('data-donasi.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-medal"></i>
+                            <div data-i18n="Documentation">Data Donasi</div>
                         </a>
                     </li>
                 </ul>

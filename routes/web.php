@@ -39,3 +39,7 @@ Route::group(['prefix' => 'program-panti'], function(){
     Route::get('/data-program', [App\Http\Controllers\HomeController::class, 'programPanti'])->name('data-program.index');
     Route::get('/jenis-program', [App\Http\Controllers\HomeController::class, 'jenisProgram'])->name('jenis-program.index');
 });
+
+Route::group(['prefix' => 'donasi'], function(){
+    Route::get('/data-donasi', [App\Http\Controllers\HomeController::class, 'dataDonasi'])->name('data-donasi.index');
+});

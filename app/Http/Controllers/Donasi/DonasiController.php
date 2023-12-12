@@ -16,11 +16,7 @@ class DonasiController extends Controller
      */
     public function index()
     {
-        $donasi = Donasi::get();
-
-        $data = [
-            'donasi' => $donasi->toArray(),
-        ];
+        $data = Donasi::all();
 
         return response()->json($data, 200);
     }
@@ -69,7 +65,7 @@ class DonasiController extends Controller
                 'pesan' => $request->pesan,
                 'bukti_bayar' => $gambar_fileBukti,
                 'donatur' => $request->donatur,
-                'isValid' => 'false',
+                'isValid' => 'pending',
             ];
 
             Donasi::create($data);

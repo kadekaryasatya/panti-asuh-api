@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('pesan');
             $table->string('bukti_bayar');
             $table->string('donatur');
+            $table->string('isValid');
             $table->timestamps();
         });
     }

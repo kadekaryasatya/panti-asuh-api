@@ -57,4 +57,8 @@ class HomeController extends Controller
     public function jenisProgram(){
         return view('admin.program-panti.jenis-program');
     }
+
+    public function dataDonasi(){
+        return view('admin.donasi.donasi');
+    }
 }
