@@ -40,7 +40,7 @@ class ArtikelController extends Controller
     {
         $validasi = Validator::make($request->all(), [
             'judul'=>'required|max:100',
-            'deskripsi'=>'required|max:255',
+            'deskripsi'=>'required',
             'gambar'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
         ], [
@@ -95,7 +95,7 @@ class ArtikelController extends Controller
     {
         $data = $request->validate([
             'judul' => 'required|max:100',
-            'deskripsi' => 'required|max:255',
+            'deskripsi' => 'required',
             'pengurus_panti_id' => 'exists:pengurus_pantis,id',
         ]);
 

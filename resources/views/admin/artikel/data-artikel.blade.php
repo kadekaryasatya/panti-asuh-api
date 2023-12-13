@@ -177,7 +177,13 @@
                                 data: 'judul'
                             },
                             {
-                                data: 'deskripsi'
+                                data: 'deskripsi',
+                                render: function(data, type, row) {
+                                    // Batasi deskripsi menjadi 50 karakter
+                                    var truncatedText = data.length > 50 ? data.substr(0, 50) +
+                                        '...' : data;
+                                    return truncatedText;
+                                }
                             },
                             {
                                 data: 'users',

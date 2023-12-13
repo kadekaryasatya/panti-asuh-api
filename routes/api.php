@@ -60,6 +60,6 @@ Route::get('/artikel', [ArtikelController::class, 'index']);
 Route::get('/artikel/{artikel}', [ArtikelController::class, 'show']);
 
 // Routes within the middleware group
+Route::apiResource('artikel', ArtikelController::class);
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::apiResource('artikel', ArtikelController::class)->except(['index', 'show']);
 });
